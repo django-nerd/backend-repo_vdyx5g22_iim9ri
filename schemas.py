@@ -13,6 +13,7 @@ Model name is converted to lowercase for the collection name:
 
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import date
 
 # Example schemas (replace with your own):
 
@@ -38,11 +39,18 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+# Hotel-specific schemas
+class Booking(BaseModel):
+    """
+    Bookings collection schema
+    Collection name: "booking"
+    """
+    name: str = Field(..., description="Guest full name")
+    phone: str = Field(..., description="Contact number")
+    email: Optional[str] = Field(None, description="Email address")
+    check_in: date = Field(..., description="Check-in date")
+    check_out: date = Field(..., description="Check-out date")
+    guests: int = Field(1, ge=1, le=12, description="Number of guests")
+    room_type: Optional[str] = Field(None, description="Preferred room type")
+    message: Optional[str] = Field(None, description="Additional request or note")
+    source: Optional[str] = Field("website", description="Lead source, default website")
